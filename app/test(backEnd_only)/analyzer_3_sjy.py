@@ -21,17 +21,30 @@ class LawAnalyzer:
         return None
 
     def extract_tags(self, text: str):
-        """법령에서 부서명, 사내 분류, 키워드를 추출하는 기능"""
+        """법령에서 부서명, 사내 분류, 키워드, 요약, 시행일, 리스크를 추출하는 기능"""
         regex_dept = self._extract_department_by_regex(text)
         
         prompt = ChatPromptTemplate.from_messages([
             ("system", """당신은 가상 회사 '경영지원본부'의 AI 법무 어시스턴트입니다. 
-법령 텍스트를 분석하여 아래 JSON 형식으로 응답하세요:
+법령 텍스트를 분석하여 아래 JSON 형식으로 응답하세요. 
+이 데이터는 사내 DB에 저장되어 대시보드와 업데이트 목록에 바로 사용됩니다:
 {{
-  "gov_department": "정부 주관 부서 (없으면 '미지정')",
-  "company_category": "사내 관련 부서 (인사/HR, 재무/회계, 총무, 기타 중 택1)",
-  "keywords": ["핵심키워드1", "핵심키워드2", "핵심키워드3"]
+  "law_title": "법령 명칭 (예: 근로기준법)",
+  "article_title": "조문 제목 (예: 제53조 연장 근로의 제한)",
+  "gov_department": "정부 주관 부서 (예: 고용노동부)",
+  "related_departments": ["사내 관련 부서 (인사/HR, 재무/회계, 총무 중 선택)"],
+  "summary": "법령 요약 (개정 시 변경점 강조, 미개정 시 핵심 내용 요약)",
+  "announcement_date": "공포일 (YYYY-MM-DD, 없으면 '미정')",
+  "effective_date": "시행일 (YYYY-MM-DD, 없으면 '미정')",
+  "risk_level": "리스크 등급 (상, 중, 하)",
+  "keywords": ["핵심키워드1", "핵심키워드2"]
 }}
+
+**[사내 부서 분류 가이드]**
+1. **인사(HR)**: 근로기준법, 산업안전보건법, 남녀고용평등법 등
+2. **재무(Finance)**: 상법(회계), 법인세법, 조세특례제한법, 부가가치세법 등
+3. **총무(General Affairs)**: 상법(주총/이사), 공정거래법, 개인정보보호법 등
+
 참고(Regex 추출 결과): {dept_hint}"""),
             ("human", "분석할 법령 텍스트:\n{law_text}")
         ])
@@ -56,36 +69,61 @@ class LawAnalyzer:
 
 ### 3. 🚨 기업 준수 사항 및 조치 필요 항목
 - 우리 회사가 즉시 수행해야 할 액션 아이템 (예: 취업규칙 개정, 시스템 반영 등)
-- 관련 부서(인사/재무/총무)별 권고 사항"""),
+- 관련 부서(인사/재무/총무)별 권고 사항
+- 수정이 필요한 사내 규정 목록 추천"""),
             ("human", "이전 규정:\n{old}\n\n현재 규정:\n{new}")
         ])
         
         chain = prompt | self.llm | StrOutputParser()
         return chain.invoke({"old": old_text, "new": new_text})
 
+    def analyze_crawler_data(self, crawler_json: dict):
+        """크롤러가 수집한 JSON 데이터를 받아 전체 분석(태깅+비교)을 수행하는 브릿지 함수"""
+        detail = crawler_json.get("OldAndNewService", {})
+        
+        # 1. 텍스트 추출 (신조문/구조문)
+        new_items = detail.get("신조문목록", {}).get("조문", [])
+        old_items = detail.get("구조문목록", {}).get("조문", [])
+        
+        new_text = "\n".join([item.get("content", "") for item in new_items])
+        old_text = "\n".join([item.get("content", "") for item in old_items])
+        
+        # 2. 기본 정보 추출 (태깅 힌트용)
+        new_info = detail.get("신조문_기본정보", {})
+        law_context = f"법령명: {new_info.get('법령명', '')}\n소관부처: {new_info.get('소관부처명', '')}\n본문:\n{new_text}"
+        
+        # 3. AI 분석 수행
+        tags = self.extract_tags(law_context)
+        comparison = self.compare_laws(old_text, new_text)
+        
+        return {
+            "tags": tags,
+            "comparison_report": comparison
+        }
+
 # --- 경영지원본부 맞춤형 테스트 섹션 ---
 if __name__ == "__main__":
     analyzer = LawAnalyzer()
     
-    # 예시 1: 인사/HR 관련 (근로기준법 개정 가정)
-    hr_law = """
-    [공포일: 2026.03.01] 제53조(연장 근로의 제한) 
-    사용자는 특별한 사정이 있으면 고용노동부장관의 승인과 근로자의 동의를 받아 연장근로를 시킬 수 있다.
-    [담당부서: 고용노동부 근로기준정책과]
-    """
-    
-    print("="*60)
-    print(" [Case 1. HR 관련 법령 태깅 및 부서 분류] ")
-    print("="*60)
-    hr_tags = analyzer.extract_tags(hr_law)
-    print(f"결과: {hr_tags}")
-    
-    # 예시 2: 재무/회계 관련 (세법 개정 가정)
-    old_tax = "법인세율을 과세표준 2억원 이하에 대해 10%를 적용한다."
-    new_tax = "법인세율을 과세표준 5억원 이하에 대해 9%를 적용하여 중소기업의 부담을 완화한다."
-    
+    # 예시 3: 팀원들의 실제 크롤러 데이터 연동 테스트
     print("\n" + "="*60)
-    print(" [Case 2. 재무 관련 법령 개정 비교 및 회사 조치 사항] ")
+    print(" [Case 3. 실제 크롤러 JSON 데이터 연동 테스트] ")
     print("="*60)
-    tax_analysis = analyzer.compare_laws(old_tax, new_tax)
-    print(tax_analysis)
+    
+    # 실제 샘플 데이터 로드 (파일이 없을 경우 대비하여 try-except)
+    import json
+    sample_path = "app/api/sample_law_versions_detail.json"
+    try:
+        with open(sample_path, "r", encoding="utf-8") as f:
+            sample_json = json.load(f)
+        
+        analysis_result = analyzer.analyze_crawler_data(sample_json)
+        
+        print("\n[1. 태깅 및 분류 결과]")
+        print(json.dumps(analysis_result["tags"], ensure_ascii=False, indent=2))
+        
+        print("\n[2. 개정 비교 보고서]")
+        print(analysis_result["comparison_report"])
+        
+    except FileNotFoundError:
+        print(f"❌ '{sample_path}' 파일을 찾을 수 없어 테스트를 건너뜁니다.")
