@@ -53,7 +53,7 @@ def initialize_session() -> bool:
         bool : 세션 초기화 성공 여부
     """
     try:
-        GLOBAL_SESSION.get(MAIN_URL, timeout=10, verify=False)
+        GLOBAL_SESSION.get(MAIN_URL, timeout=20, verify=False)
         print("✅ 법제처 세션 초기화 완료")
         return True
     except requests.exceptions.RequestException as e:
