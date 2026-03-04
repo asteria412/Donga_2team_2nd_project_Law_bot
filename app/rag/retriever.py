@@ -44,18 +44,3 @@ class HRRetriever:
         return "\n".join(formatted_context)
 
 retriever_instance = HRRetriever()
-
-# app/rag/retriever.py 맨 밑에 추가
-
-if __name__ == "__main__":
-    # 1. 리트리버 인스턴스에서 질문 던지기
-    test_query = "전자세금계산서 세액공제에 대해 알려줘"
-    
-    # 2. 관련 문서 3개 찾아오기
-    found_docs = retriever_instance.get_relevant_documents(test_query, k=3)
-    
-    # 3. 출처와 함께 예쁘게 출력하기
-    context = retriever_instance.format_docs_with_citation(found_docs)
-    
-    print(f"\n🔎 질문: {test_query}")
-    print(f"📄 검색된 결과:\n{context}")
