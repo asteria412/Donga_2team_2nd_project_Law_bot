@@ -100,8 +100,8 @@ st.markdown("""
 st.sidebar.markdown("""
 <div class="logo-box">
   <span class="logo-emoji">⚖️</span>
-  <div class="logo-title">LAWBOT</div>
-  <div class="logo-sub">2조 법령 요약 에이전트 LAWBOT</div>
+  <div class="logo-title">법령 요약 시스템</div>
+  <div class="logo-sub">2조 법령 요약 에이전트 v1.0</div>
 </div>
 """, unsafe_allow_html=True)
 
