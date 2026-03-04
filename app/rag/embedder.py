@@ -59,23 +59,3 @@ class HREmbedder:
 # 어디서든 불러 쓸 수 있게 인스턴스 생성
 embedder_instance = HREmbedder()
 
-# 3. [실행부 추가] 파일 맨 밑에 이 내용을 넣으면 바로 테스트가 가능합니다.
-if __name__ == "__main__":
-    import json
-    from langchain_core.documents import Document
-
-    # 샘플 파일 읽기
-    try:
-        with open("app/api/sample_law_versions_detail.json", "r", encoding="utf-8") as f:
-            data = json.load(f)
-        
-        # 신조문 데이터 추출 및 변환
-        new_laws = data["OldAndNewService"]["신조문목록"]["조문"]
-        docs = [Document(page_content=item["content"], metadata={"no": item["no"]}) for item in new_laws]
-
-        # 저장 기능 실행
-        embedder_instance.ingest_documents(docs)
-        print("🎉 DB 저장 성공!")
-        
-    except FileNotFoundError:
-        print("❌ 'sample_law_versions_detail.json' 파일이 없습니다. 파일명을 확인해주세요.")
