@@ -4,3 +4,4 @@ streamlit
 langchain
 python-dotenv
 requests
+apscheduler

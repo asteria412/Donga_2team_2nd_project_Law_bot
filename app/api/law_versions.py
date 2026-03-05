@@ -84,17 +84,25 @@ class LawDetailResponse(BaseModel):
     class Config:
         populate_by_name = True
         
-@router.get("/{mst}/details", response_model=LawDetailResponse)
-def get_law_version_detail(mst: str):
+# Updated Route in app/api/law_versions.py
+
+@router.get("/{law_id}/comparison", response_model=LawDetailResponse)
+def get_law_comparison(law_id: str):
+    """
+    Fetches the 'Old vs New' detail for a specific Law ID.
+    Example: /api/law-versions/001571/comparison
+    """
     try:
-        # In a real app, you might look for a file named f"detail_{mst}.json"
         with open(DETAIL_FILE_PATH, "r", encoding="utf-8") as file:
             data = json.load(file)
         
         detail = data.get("OldAndNewService")
-        if not detail:
-            raise HTTPException(status_code=404, detail="Detail section missing")
+        
+        # Validation: Ensure the Law ID in the file matches the request
+        # Note: In the detail JSON, this is often '법령ID'
+        if detail["신조문_기본정보"]["법령ID"] != law_id:
+            raise HTTPException(status_code=404, detail=f"No comparison found for Law ID {law_id}")
             
         return detail
     except FileNotFoundError:
-        raise HTTPException(status_code=404, detail=f"Details for MST {mst} not found")
+        raise HTTPException(status_code=404, detail="Detail data file not found.")
