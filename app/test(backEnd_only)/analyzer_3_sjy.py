@@ -101,6 +101,39 @@ class LawAnalyzer:
             "comparison_report": comparison
         }
 
+    def analyze_precedent(self, text: str):
+        """판례 본문을 분석하여 핵심 키워드, 사건 요약, 기업 시사점을 추출하는 기능"""
+        prompt = ChatPromptTemplate.from_messages([
+            ("system", """당신은 기업 법무팀 소속의 판례 분석 전문가입니다. 
+판례 내용을 분석하여 아래 JSON 형식으로 응답하세요:
+{{
+  "case_name": "사건명",
+  "case_number": "사건번호",
+  "keywords": ["핵심키워드1", "핵심키워드2", "핵심키워드3"],
+  "summary": "판결 요지 및 핵심 내용 요약",
+  "corporate_implication": "우리 회사에 주는 시사점 및 주의 사항 (경영지원 관점)"
+}}"""),
+            ("human", "분석할 판례 텍스트:\n{precedent_text}")
+        ])
+        
+        chain = prompt | self.llm | JsonOutputParser()
+        return chain.invoke({"precedent_text": text})
+
+    def analyze_with_rag(self, query: str, context: str):
+        """RAG로 검색된 참고 자료(context)를 바탕으로 사용자의 질문에 답하는 기능 (챗봇 엔진)"""
+        prompt = ChatPromptTemplate.from_messages([
+            ("system", """당신은 기업 경영지원본부의 법무 에이전트입니다. 
+제공된 [참고 법령 및 판례 자료]를 바탕으로 사용자의 질문에 정확하고 전문적으로 답변하세요. 
+답변에는 반드시 관련 법령이나 판례의 출처를 명시해야 합니다.
+
+[참고 자료]
+{context}"""),
+            ("human", "{query}")
+        ])
+        
+        chain = prompt | self.llm | StrOutputParser()
+        return chain.invoke({"query": query, "context": context})
+
 # --- 경영지원본부 맞춤형 테스트 섹션 ---
 if __name__ == "__main__":
     analyzer = LawAnalyzer()
@@ -127,3 +160,43 @@ if __name__ == "__main__":
         
     except FileNotFoundError:
         print(f"❌ '{sample_path}' 파일을 찾을 수 없어 테스트를 건너뜁니다.")
+
+    print("\n" + "="*60)
+    print(" [Case 4. 실제 판례 JSON 데이터 연동 테스트] ")
+    print("="*60)
+    
+    prec_path = "app/test(backEnd_only)/output/law_prec.json"
+    try:
+        with open(prec_path, "r", encoding="utf-8") as f:
+            prec_json = json.load(f)
+        
+        # 실제 데이터에서 판결요지 추출
+        judgment_text = prec_json.get("본문결과", {}).get("판결요지", "")
+        
+        if judgment_text:
+            print(f"\n[대상 판례]: {prec_json.get('판례명', '알 수 없음')}")
+            precedent_result = analyzer.analyze_precedent(judgment_text)
+            print(json.dumps(precedent_result, ensure_ascii=False, indent=2))
+        else:
+            print("⚠️ 판례 본문 데이터가 없어 테스트를 수행할 수 없습니다.")
+            
+    except FileNotFoundError:
+        print(f"❌ '{prec_path}' 파일을 찾을 수 없어 테스트를 건너뜁니다.")
+
+    # 예시 5: RAG 연동 가상 테스트 (챗봇 모드)
+    print("\n" + "="*60)
+    print(" [Case 5. RAG 기반 지식 답변 테스트 (챗봇)] ")
+    print("="*60)
+    
+    # RAG 리트리버가 찾아준 가상의 컨텍스트 데이터
+    mock_context = """
+    [문서 1 - 출처: 근로기준법 제60조]
+    사용자는 1년간 80퍼센트 이상 출근한 근로자에게 15일의 유급휴가를 주어야 한다.
+    [문서 2 - 출처: 근로기준법 제61조]
+    사용자가 유급휴가 사용을 촉진하기 위한 조치를 하였음에도 근로자가 휴가를 사용하지 아니한 경우, 사용자는 그 미사용 휴가에 대하여 보상할 의무가 없다.
+    """
+    user_query = "회사가 연차 사용을 독촉했는데도 제가 안 쓰면 돈으로 못 받나요?"
+    
+    rag_response = analyzer.analyze_with_rag(user_query, mock_context)
+    print(f"질문: {user_query}")
+    print(f"답변:\n{rag_response}")
