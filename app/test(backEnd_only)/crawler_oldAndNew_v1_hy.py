@@ -149,7 +149,8 @@ def initial_check():
             update_laws()
         else:
             print("✅ 기존 데이터 존재")
-
+            
+'''#테스트 위해 업데이트 예약 비활성화
 def schedule_job():
     seoul_tz = pytz.timezone("Asia/Seoul")
     scheduler = BackgroundScheduler(timezone=seoul_tz)
@@ -162,8 +163,8 @@ def schedule_job():
             time.sleep(60)
     except (KeyboardInterrupt, SystemExit):
         scheduler.shutdown()
-
+'''
 if __name__ == "__main__":
     initialize_session()
     initial_check()
-    schedule_job() #테스트 위해 업데이트 예약 비활성화
+    #schedule_job() #테스트 위해 업데이트 예약 비활성화
