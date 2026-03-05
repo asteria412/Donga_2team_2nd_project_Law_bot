@@ -54,7 +54,7 @@ if __name__ == "__main__":
     # 2. 관련 문서 3개 찾아오기
     found_docs = retriever_instance.get_relevant_documents(test_query, k=3)
     
-    # 3. 출처와 함께 예쁘게 출력하기
+    # 3. 출처와 함께 출력하기
     context = retriever_instance.format_docs_with_citation(found_docs)
     
     print(f"\n🔎 질문: {test_query}")

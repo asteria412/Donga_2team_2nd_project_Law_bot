@@ -59,3 +59,51 @@ class HREmbedder:
 # 어디서든 불러 쓸 수 있게 인스턴스 생성
 embedder_instance = HREmbedder()
 
+"""
+# 3. [실행부 추가] 실제 law_prec.json 구조에 맞게 수정했습니다.
+if __name__ == "__main__":
+    import json
+    import re
+    from langchain_core.documents import Document
+
+    # 파일 경로 (이미지 및 터미널 확인 경로 기준)
+    file_path = "app/test(backEnd_only)/output/law_prec.json"
+
+    try:
+        with open(file_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        
+        # [데이터 추출] '본문결과' 내의 '판결요지'를 가져옵니다.
+        # <br/> 같은 HTML 태그를 제거하는 전처리 작업을 추가했습니다.
+        raw_content = data.get("본문결과", {}).get("판결요지", "")
+        clean_content = re.sub(r'<[^>]+>', '', raw_content) # HTML 태그 제거
+        
+        # [메타데이터 구성] 검색 시 출처로 쓰일 정보들을 정리합니다.
+        # 목록결과의 첫 번째 항목에서 사건 정보를 가져옵니다.
+        case_info = data.get("목록결과", [{}])[0] 
+        
+        metadata = {
+            "판례명": data.get("판례명", "알 수 없음"),
+            "사건번호": case_info.get("사건번호", ""),
+            "법원명": case_info.get("법원명", ""),
+            "선고일자": case_info.get("선고일자", ""),
+            "판례ID": data.get("판례ID", "")
+        }
+
+        # [Document 객체 생성] 텍스트와 메타데이터를 하나로 묶습니다.
+        if clean_content:
+            doc = Document(page_content=clean_content, metadata=metadata)
+            
+            # 저장 기능 실행 (리스트 형태로 전달)
+            embedder_instance.ingest_documents([doc])
+            print("🎉 벡터 DB 저장 성공!")
+        else:
+            print("⚠️ 저장할 본문 내용이 비어있습니다.")
+            
+    except FileNotFoundError:
+        print(f"❌ '{file_path}' 파일을 찾을 수 없습니다. 경로를 확인해주세요.")
+    except Exception as e:
+        print(f"❌ 오류 발생: {e}")
+        """
+        
+        
