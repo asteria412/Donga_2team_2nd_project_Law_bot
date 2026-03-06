@@ -44,3 +44,26 @@ class HRRetriever:
         return "\n".join(formatted_context)
 
 retriever_instance = HRRetriever()
+"""
+if __name__ == "__main__":
+    # 1. 아까 저장한 '건설업 수급인 임금 지급 책임'에 대한 질문을 던집니다.
+    test_query = "건설업에서 하수급인이 임금을 못 주면 누가 책임져야 하나요?"
+    
+    # 2. 관련 문서 3개 찾아오기 (저장했던 조각이 나올 거예요!)
+    found_docs = retriever_instance.get_relevant_documents(test_query, k=3)
+    
+    # 3. 출처(판례명, 사건번호 등)가 잘 나오도록 출력 포맷을 확인합니다.
+    # 메타데이터 키값이 "판례명", "사건번호"로 저장되었으므로 이를 반영해 출력하면 더 좋습니다.
+    print(f"\n🔎 질문: {test_query}")
+    print("-" * 50)
+    
+    if not found_docs:
+        print("❌ 검색된 결과가 없습니다. DB 저장 상태를 확인해 주세요.")
+    else:
+        for i, doc in enumerate(found_docs):
+            title = doc.metadata.get("판례명", "정보 없음")
+            case_no = doc.metadata.get("사건번호", "정보 없음")
+            print(f"📄 [결과 {i+1}] {title} ({case_no})")
+            print(f"💡 내용 요약: {doc.page_content[:150]}...") # 앞부분만 살짝 출력
+            print("-" * 50)
+            """

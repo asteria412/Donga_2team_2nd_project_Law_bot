@@ -1,6 +1,6 @@
 # app/main.py
 from fastapi import FastAPI
-from api.law_versions import router as law_router
+from app.api.law_versions import router as law_router
 # You can easily import from your other folders here:
 # from app.agent.bot_logic import process_question
 
