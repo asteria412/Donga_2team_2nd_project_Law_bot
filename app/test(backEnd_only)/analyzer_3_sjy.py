@@ -91,16 +91,36 @@ class LawAnalyzer:
         """크롤러가 수집한 JSON 데이터를 받아 전체 분석(태깅+비교)을 수행하는 브릿지 함수"""
         detail = crawler_json.get("OldAndNewService", {})
         
-        # 1. 텍스트 추출 (신조문/구조문)
-        new_items = detail.get("신조문목록", {}).get("조문", [])
-        old_items = detail.get("구조문목록", {}).get("조문", [])
+        # 1. 방어적 필드 추출 (언더바 포함/미포함 대응)
+        def get_field(obj, keys):
+            for k in keys:
+                if k in obj: return obj[k]
+            return {}
+
+        new_info = get_field(detail, ["신조문_기본정보", "신조문기본정보"])
+        old_info = get_field(detail, ["구조문_기본정보", "구조문기본정보"])
+        
+        new_list_obj = get_field(detail, ["신조문목록", "신조문_목록"])
+        old_list_obj = get_field(detail, ["구조문목록", "구조문_목록"])
+        
+        new_items = new_list_obj.get("조문", [])
+        old_items = old_list_obj.get("조문", [])
         
         new_text = "\n".join([item.get("content", "") for item in new_items])
         old_text = "\n".join([item.get("content", "") for item in old_items])
         
-        # 2. 기본 정보 추출 (태깅 힌트용)
-        new_info = detail.get("신조문_기본정보", {})
-        law_context = f"법령명: {new_info.get('법령명', '')}\n소관부처: {new_info.get('소관부처명', '')}\n본문:\n{new_text}"
+        # 2. 기본 정보 구성 (태깅 및 비교 힌트용)
+        law_context = f"""법령명: {new_info.get('법령명', '')}
+공포일: {new_info.get('공포일자', '')}
+시행일: {new_info.get('시행일자', '')}
+개정구분: {new_info.get('제개정구분명', '')}
+소관부처: {new_info.get('소관부처명', '')}
+
+[신조문]
+{new_text}
+
+[구조문]
+{old_text}"""
         
         # 3. AI 분석 수행
         tags = self.extract_tags(law_context)
