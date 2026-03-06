@@ -5,6 +5,15 @@ cd app
 ```
 ## API 사용 예시 
 
+### 회사 부서별 관련 법
+
+### 매핑 조회
+/api/team-laws
+/api/team-laws/인사
+
+### 매핑 상수 사용
+from app.main import TEAM_LAWS
+
 ### 신구법 변화 목록 조회(법령명 등으로 검색)
 /api/law-versions/?name={구체적인 법령명 키워드}&mst={구체적인 법령일련번호}
 
