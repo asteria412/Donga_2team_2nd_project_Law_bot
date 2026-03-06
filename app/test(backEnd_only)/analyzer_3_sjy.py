@@ -33,7 +33,12 @@ class LawAnalyzer:
   "article_title": "조문 제목 (예: 제53조 연장 근로의 제한)",
   "gov_department": "정부 주관 부서 (예: 고용노동부)",
   "related_departments": ["사내 관련 부서 (인사/HR, 재무/회계, 총무 중 선택)"],
-  "summary": "법령 요약 (개정 시 변경점 강조, 미개정 시 핵심 내용 요약)",
+  "summary": "법령 요약 (변경 사항이 많을 경우 '제n조 [제목] 외 m건 변동' 형식으로 시작하고, 뒤에 핵심 변경 취지를 1~2문장으로 덧붙이세요)",
+  "article_changes": {{
+    "added": ["제n조", "제m조"],
+    "deleted": ["제k조"],
+    "modified": ["제p조", "제q조"]
+  }},
   "announcement_date": "공포일 (YYYY-MM-DD, 없으면 '미정')",
   "effective_date": "시행일 (YYYY-MM-DD, 없으면 '미정')",
   "risk_level": "리스크 등급 (상, 중, 하)",
@@ -61,13 +66,18 @@ class LawAnalyzer:
             ("system", """당신은 기업 경영지원본부 소속의 법령 개정 분석 전문가입니다. 
 법령 개정안을 기업 관점에서 분석하여 Markdown 보고서 형태로 답변하세요. 
 
-### 1. 개정 요약 및 취지
+### 1. 📂 조문 변동 현황 (핵심 요약)
+- **추가**: 제n조, 제m조 ... (3개 초과 시 '등'으로 표시)
+- **삭제**: 제k조 ...
+- **변경**: 제p조 ...
+
+### 2. 📝 개정 요약 및 취지
 - 기업 입장에서 어떤 점이 바뀌는지 한 줄 요약
 
-### 2. 주요 변경 대비 (Before vs After)
+### 3. 🔍 주요 변경 대비 (Before vs After)
 - 구체적인 규정 변화를 항목별로 비교
 
-### 3. 🚨 기업 준수 사항 및 조치 필요 항목
+### 4. 🚨 기업 준수 사항 및 조치 필요 항목
 - 우리 회사가 즉시 수행해야 할 액션 아이템 (예: 취업규칙 개정, 시스템 반영 등)
 - 관련 부서(인사/재무/총무)별 권고 사항
 - 수정이 필요한 사내 규정 목록 추천"""),
@@ -119,7 +129,7 @@ class LawAnalyzer:
         chain = prompt | self.llm | JsonOutputParser()
         return chain.invoke({"precedent_text": text})
 
-    def analyze_with_rag(self, query: str, context: str):
+    def answer_with_rag(self, query: str, context: str):
         """RAG로 검색된 참고 자료(context)를 바탕으로 사용자의 질문에 답하는 기능 (챗봇 엔진)"""
         prompt = ChatPromptTemplate.from_messages([
             ("system", """당신은 기업 경영지원본부의 법무 에이전트입니다. 
@@ -197,6 +207,6 @@ if __name__ == "__main__":
     """
     user_query = "회사가 연차 사용을 독촉했는데도 제가 안 쓰면 돈으로 못 받나요?"
     
-    rag_response = analyzer.analyze_with_rag(user_query, mock_context)
+    rag_response = analyzer.answer_with_rag(user_query, mock_context)
     print(f"질문: {user_query}")
     print(f"답변:\n{rag_response}")
