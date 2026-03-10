@@ -12,7 +12,7 @@ def render_chatbot_page():
     st.markdown("<p style='color:#868e96;margin-top:-10px;'>무한개발공사 사내 규정에 대해 무엇이든 물어보세요.</p>", unsafe_allow_html=True)
 
     if "messages" not in st.session_state:
-        st.session_state.messages = [{"role":"assistant","content":"안녕하세요! 무한개발공사 규정 안내 전문가, AI 무한raw봇입니다."}]
+        st.session_state.messages = [{"role":"assistant","content":"안녕하세요! 무한개발공사 규정 안내 전문가, AI 무한raw봇입니다. 무엇을 도와드릴까요?"}]
 
     for msg in st.session_state.messages:
         with st.chat_message(msg["role"]):
@@ -31,7 +31,7 @@ def render_chatbot_page():
                 res = client.chat.completions.create(
                     model="gpt-4o-mini",
                     messages=[
-                        {"role": "system", "content": "사내 규정 전문가 AI 무한raw봇입니다."},
+                        {"role": "system", "content": "사내 규정 전문가 AI 무한raw봇입니다. 당신은 기업의 실무진을 돕는 친절하고 전문적인 법무 비서입니다."},
                         {"role": "user", "content": f"[규정]\n{context}\n\n[질문]\n{prompt}"}
                     ]
                 )

@@ -12,11 +12,14 @@ def render_law_card(law):
 
     html = (
         f'<div class="law-card"><div class="law-card-content">'
-        f'<div class="law-badge-area"><span class="law-dept-badge">{law["dept"]}</span>'
-        f'<span class="law-new-badge">NEW</span></div>'
+        f'<div class="law-badge-area">'
+        f'<span class="law-dept-badge">👤 {law["dept"]}</span>'
+        f'<span class="law-new-badge">NEW</span>'
+        f'</div>'
         f'<div class="law-title">{law["title"]}</div>'
-        f'<div class="law-info">공포: {p} | 시행: {e}</div>'
-        f'<div class="law-info">주관: {law["agency"]}</div>'
+        f'<div class="law-info">📅 <b>공포:</b> {p}</div>'
+        f'<div class="law-info">🚀 <b>시행:</b> {e}</div>'
+        f'<div class="law-info">🏛️ <b>주관:</b> {law["agency"]}</div>'
         f'{summary_html}'
         '</div></div>'
     )
@@ -29,9 +32,10 @@ def render_law_card(law):
             use_container_width=True)
     with col2:
         if st.button("🤖 AI 퀴즈", key=f"quiz{law['mst_id']}", use_container_width=True):
-            st.session_state[f"show_quiz_{law['mst_id']}"] = True
+            st.session_state.active_quiz_id = law['mst_id']
+            st.rerun()
     
-    if st.session_state.get(f"show_quiz_{law['mst_id']}", False):
+    if st.session_state.get("active_quiz_id") == law['mst_id']:
         quiz_modal(law)
 
 def _fmt(raw):

@@ -57,7 +57,7 @@ def get_laws_sync(dept, count):
                         dept_tag = "🗂️ 기타/공통"
                         for d_n, kws in DEPT_KEYWORDS.items():
                             if any(k in name for k in kws):
-                                dept_tag = f"📍 {d_n.replace('팀','')}/회계팀" if "재무" in d_n else f"📍 {d_n}"
+                                dept_tag = f"{d_n.replace('팀','')}/회계팀" if "재무" in d_n else f"{d_n}"
 
                         summary = get_law_change_summary(item.findtext('신구법일련번호',''), session)
 
@@ -70,7 +70,7 @@ def get_laws_sync(dept, count):
                             "title": name, 
                             "p_dt": p_dt, 
                             "e_dt": e_dt,
-                            "agency": clean_agency, # 중복 제거된 부서명
+                            "agency": clean_agency,
                             "mst_id": item.findtext('신구법일련번호',''),
                             "dept": dept_tag, 
                             "summary": summary

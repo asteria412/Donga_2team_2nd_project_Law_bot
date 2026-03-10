@@ -5,19 +5,18 @@
 import streamlit as st
 
 def render_sidebar():
+    # Logo Section
+    logo_path = "assets/logo.png"
+    
+    st.markdown('<div class="sidebar-logo-container">', unsafe_allow_html=True)
+    st.image(logo_path, use_container_width=True)
     st.markdown("""
-    <div class="sidebar-logo" style="padding-left: 0px; margin-left: -6px;">
-        <div style="display: flex; align-items: center; gap: 8px;">
-            <span style="font-size: 35px;">🏢</span>
-            <span style="color: #4c6ef5; font-size: 30px; font-weight: 800; letter-spacing: -2px;">
-                무한개발공사
-            </span>
+        <div style="text-align: center;">
+            <span style="color: #1a73e8; font-size: 24px; font-weight: 800; letter-spacing: -1px;">무한개발공사</span>
+            <p style="color:#65676b; font-size:14px; margin-top:0px; font-weight:500;">경영지원본부 Legal Service</p>
         </div>
-        <p style="color:#868e96; font-size:18px; padding-left:45px; margin-top:5px; font-weight:500;">
-            경영지원본부
-        </p>
-    </div>
     """, unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
 
     menu_options = ["📜 실시간 법령 피드", "💬 AI 사내규정 챗봇"]
     selected_page = st.radio("MAIN MENU", menu_options, label_visibility="collapsed")

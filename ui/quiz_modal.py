@@ -67,5 +67,5 @@ def quiz_modal(law):
                 st.rerun()
         with col2:
             if st.button("닫기", use_container_width=True):
-                st.session_state[f"show_quiz_{law['mst_id']}"] = False
+                st.session_state.active_quiz_id = None
                 st.rerun()

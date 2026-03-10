@@ -5,133 +5,193 @@
 
 BASE_STYLE = """
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+
+    :root {
+        --primary-color: #1a73e8;
+        --secondary-color: #606468;
+        --bg-color: #f0f2f5;
+        --card-bg: rgba(255, 255, 255, 0.9);
+        --glass-bg: rgba(255, 255, 255, 0.7);
+        --border-color: rgba(0, 0, 0, 0.05);
+        --text-main: #1c1e21;
+        --text-muted: #65676b;
+    }
 
     html, body, [class*="css"] {
-        font-family: 'Noto Sans KR', sans-serif;
-        background-color: #f8f9fa;
+        font-family: 'Inter', 'Noto Sans KR', sans-serif;
+        background-color: var(--bg-color);
+        color: var(--text-main);
     }
 
+    /* Sidebar Styling */
     [data-testid="stSidebar"] {
         background-color: white;
-        border-right: 1px solid #eee;
-        padding-top: 20px;
+        border-right: 1px solid var(--border-color);
+        box-shadow: 2px 0 10px rgba(0,0,0,0.02);
     }
 
-    .sidebar-logo {
-        padding: 0 20px 20px 20px;
+    .sidebar-logo-container {
+        padding: 20px;
+        text-align: center;
+        border-bottom: 1px solid var(--border-color);
         margin-bottom: 20px;
     }
 
-    [data-testid="stSidebar"] div[role="radiogroup"] {
-        gap: 20px !important;
+    .sidebar-logo-img {
+        width: 120px;
+        border-radius: 12px;
+        margin-bottom: 10px;
+        transition: transform 0.3s ease;
     }
-    [data-testid="stSidebar"] div[role="radiogroup"] label {
-        font-size: 18px !important;
-        font-weight: 500 !important;
-        color: #495057 !important;
+    .sidebar-logo-img:hover {
+        transform: scale(1.05);
     }
 
-    /* 요약 카드 스타일 */
+    /* Card Styling with Glassmorphism */
+    .law-card {
+        background: var(--card-bg);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border-radius: 24px;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+        margin-bottom: 24px;
+        overflow: hidden;
+        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    }
+
+    .law-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 48px rgba(0, 0, 0, 0.1);
+        border-color: rgba(26, 115, 232, 0.2);
+    }
+
+    .law-card-content {
+        padding: 32px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .law-badge-area {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 18px;
+    }
+
+    .law-dept-badge {
+        background: rgba(26, 115, 232, 0.1);
+        color: var(--primary-color);
+        padding: 6px 16px;
+        border-radius: 50px;
+        font-size: 13px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .law-new-badge {
+        background: #e6fcf5;
+        color: #0ca678;
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-size: 11px;
+        font-weight: 800;
+        text-transform: uppercase;
+    }
+
+    .law-title {
+        font-size: 22px;
+        font-weight: 700;
+        color: #1c1e21;
+        margin-bottom: 16px;
+        line-height: 1.4;
+        letter-spacing: -0.5px;
+    }
+
+    .law-info {
+        font-size: 14px;
+        color: var(--text-muted);
+        margin-bottom: 8px;
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        line-height: 1.5;
+    }
+
+    .law-info b {
+        white-space: nowrap;
+        color: #495057;
+    }
+
+    /* Summary Cards */
     .summary-card-container {
         display: flex;
-        gap: 24px;
-        margin-bottom: 30px;
+        gap: 20px;
+        margin-bottom: 32px;
     }
+
     .summary-card {
         flex: 1;
         background: white;
         padding: 24px;
-        border-radius: 16px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+        border-radius: 20px;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.02);
         display: flex;
         align-items: center;
-        gap: 20px;
-        border: 1px solid #f1f3f5;
+        gap: 16px;
     }
+
     .summary-icon {
-        width: 56px;
-        height: 56px;
-        border-radius: 12px;
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 24px;
-    }
-    .sum-val {
-        font-size: 28px;
-        font-weight: 700;
-        color: #212529;
-    }
-    .sum-label {
-        font-size: 14px;
-        color: #868e96;
-        margin-bottom: 4px;
+        font-size: 20px;
     }
 
-    .law-card {
-        background: white;
-        border-radius: 20px;
-        border: 1px solid #f1f3f5;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.02);
-        margin-bottom: 20px;
-        overflow: hidden;
+    .sum-val {
+        font-size: 24px;
+        font-weight: 700;
+        color: #1c1e21;
     }
-    .law-card-content {
-        padding: 30px;
-        height: 240px;
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
-    }
-    .law-badge-area {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 15px;
-    }
-    .law-dept-badge {
-        background: #f1f3f5;
-        padding: 6px 14px;
-        border-radius: 30px;
+
+    .sum-label {
         font-size: 13px;
-        color: #495057;
+        color: var(--text-muted);
         font-weight: 500;
+        margin-bottom: 2px;
     }
-    .law-new-badge {
-        background: #ebfbee;
-        color: #40c057;
-        padding: 4px 12px;
-        border-radius: 8px;
-        font-size: 12px;
-        font-weight: 700;
+
+    /* Chat Styling */
+    .stChatMessage {
+        border-radius: 20px !important;
+        padding: 15px !important;
+        margin-bottom: 15px !important;
     }
-    .law-title {
-        font-size: 20px;
-        font-weight: 700;
-        color: #212529;
-        margin-bottom: 15px;
-        line-height: 1.4;
+    
+    .stChatMessage[data-testid="stChatMessageAssistant"] {
+        background-color: white !important;
+        border: 1px solid var(--border-color) !important;
+        line-height: 1.7;
     }
-    .law-info {
-        font-size: 14px;
-        color: #868e96;
-        margin-bottom: 8px;
+
+    /* Buttons */
+    .stButton > button {
+        border-radius: 12px !important;
+        padding: 10px 20px !important;
+        font-weight: 600 !important;
+        transition: all 0.2s ease !important;
     }
-    .law-actions {
-        background: #fcfdfe;
-        border-top: 1px solid #f1f3f5;
-        padding: 20px 30px;
-        display: flex;
-        gap: 15px;
-    }
-    .btn-detail {
-        color: #4c6ef5;
-        font-weight: 600;
-        font-size: 15px;
-        text-decoration: none;
-        display: flex;
-        align-items: center;
-        gap: 5px;
+
+    .stButton > button:hover {
+        transform: scale(1.02);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
 </style>
 """

@@ -8,9 +8,8 @@ from ui.law_card import render_law_card
 from ui.summary_cards import render_summary_cards
 
 def render_feed_page(selected_dept, sort_opt, limit):
-    st.title("⚖️ 무한개발공사 Raw-bot")
-    st.markdown("### 좋은 하루되세요, 경영지원본부 임직원 여러분! 🌞")
-    st.markdown("<p style='color:#868e96;margin-top:-10px;'>최근 90일간 업데이트된 핵심 법령을 확인하세요.</p>",unsafe_allow_html=True)
+    st.markdown('<h1 style="font-weight: 800; letter-spacing: -1.5px;">⚖️ 실시간 법령 피드</h1>', unsafe_allow_html=True)
+    st.markdown("<p style='color:#65676b; font-size:1.1rem; margin-top:-10px; font-weight:500;'>무한개발공사 임직원 여러분, 안녕하십니까? 최신 법령 개정 소식을 전해드립니다.</p>", unsafe_allow_html=True)
 
     laws = get_laws_sync(selected_dept, limit)
 
