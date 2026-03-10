@@ -1,6 +1,8 @@
-"""
-FAISS 인덱스 빌드 및 저장 (오케스트레이션).
-"""
+""" logic/rag/rag_engine_store.py
+[벡터 인덱스 빌드 및 오케스트레이터] '무한raw봇'이 답변의 근거로 사용할 사내 규정 데이터를 가공하고 저장하는 파일입니다.
+PDF 텍스트 추출, 청킹, OpenAI 임베딩 변환 과정을 거쳐 최종적으로 FAISS 벡터 인덱스를 구축함으로써 무한상사 내부 문서 검색 시스템의 기반을 마련합니다. """
+
+
 import os
 import json
 import faiss
