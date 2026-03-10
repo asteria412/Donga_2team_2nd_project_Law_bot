@@ -1,3 +1,8 @@
+""" logic/law_api.py
+[국가법령 API 통신 및 데이터 전처리] 국가법령정보센터 API를 통해 최신 개정 법령 데이터를 수집하는 파일입니다.
+부서별(인사/총무/재무) 맞춤형 키워드를 기반으로 관련 법률의 신구 조문을 비교 분석하며, 
+불필요한 제외 키워드 필터링 및 최근 90일 이내의 유효한 개정 사항만을 선별하여 제공합니다. """
+
 import datetime, time, requests, xml.etree.ElementTree as ET, re
 from config.settings import API_KEY, BASE_URL_LAW, BASE_URL_SERVICE, HEADERS
 import streamlit as st

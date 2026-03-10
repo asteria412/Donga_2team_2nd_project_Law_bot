@@ -1,3 +1,8 @@
+""" logic/summarizer.py
+[AI 기반 법령 퀴즈 생성기] 최신 개정 법령의 상세 조문을 분석하여 실무 맞춤형 퀴즈를 생성하는 파일입니다.
+단순히 법령 내용을 요약하는 수준을 넘어, OpenAI LLM을 활용해 실제 비즈니스 시나리오(인사/재무/총무)에 기반한 
+4지선다형 문제를 출제하며, 사용자에게 구체적인 실무 Action Item과 해설을 제공하는 교육 엔진 역할을 수행합니다. """
+
 import os
 import json
 import requests
