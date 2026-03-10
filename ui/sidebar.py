@@ -19,7 +19,7 @@ def render_sidebar():
     </div>
     """, unsafe_allow_html=True)
 
-    menu_options = ["📜 실시간 법령 피드", "💬 AI 법무 챗봇"]
+    menu_options = ["📜 실시간 법령 피드", "💬 AI 사내규정 챗봇"]
     selected_page = st.radio("MAIN MENU", menu_options, label_visibility="collapsed")
 
     st.write("")

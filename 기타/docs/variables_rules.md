@@ -168,7 +168,7 @@
 |--------|------|------|-----------|
 | `GET` | `/api/laws` | 법령 목록 조회 | feed.js |
 | `POST` | `/api/search` | AI 딥서치 | search.js |
-| `POST` | `/api/chat` | AI 법무 챗봇 (RAG) | chatbot.js |
+| `POST` | `/api/chat` | AI 사내규정 챗봇 (RAG) | chatbot.js |
 
 ---
 

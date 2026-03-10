@@ -204,7 +204,7 @@ with st.sidebar:
     """, unsafe_allow_html=True)
     
     # 🌟 실제 작동하는 메뉴로 교체!
-    menu_options = ["📜 실시간 법령 피드", "💬 AI 법무 챗봇"]
+    menu_options = ["📜 실시간 법령 피드", "💬 AI 사내규정 챗봇"]
     selected_page = st.radio("MAIN MENU", menu_options, label_visibility="collapsed")
     
     st.write("")
@@ -377,12 +377,12 @@ if "실시간 법령 피드" in selected_page:
                     quiz_modal(law)
             st.write("") 
 
-else: # AI 법무 챗봇 페이지
-    st.markdown("### 💬 AI 법무 챗봇 '무한raw봇'")
-    st.markdown("<p style='color:#868e96; margin-top:-10px;'>사내 규정 및 법률 관련 궁금한 점을 물어보세요.</p>", unsafe_allow_html=True)
+else: # AI 사내규정 챗봇 페이지
+    st.markdown("### 💬 AI 사내규정 챗봇 '무한raw봇'")
+    st.markdown("<p style='color:#868e96; margin-top:-10px;'>무한상사 사내 규정에 대해 무엇이든 물어보세요.</p>", unsafe_allow_html=True)
     
     if "messages" not in st.session_state:
-        st.session_state.messages = [{"role": "assistant", "content": "안녕하세요! 경영지원본부 AI 무한raw봇입니다. 무엇을 도와드릴까요?"}]
+        st.session_state.messages = [{"role": "assistant", "content": "안녕하세요! 무한상사 규정 안내 전문가, AI 무한raw봇입니다."}]
 
     for message in st.session_state.messages:
         with st.chat_message(message["role"]):
