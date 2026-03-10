@@ -1,20 +1,15 @@
-"""
-============================================
-logic/rag_engine.py
-============================================
-사내 규정 PDF → 청킹 → 임베딩 → FAISS 저장 / 챗봇 질의 시 관련 조각 검색
+""" logic/rag_engine.py
+[RAG 메인 컨트롤러] 무한상사 사내 규정 PDF 기반의 답변 생성을 위한 통합 진입점입니다.
+벡터 검색(FAISS)과 키워드 매칭을 결합한 하이브리드 로직을 통해 '무한raw봇'의 검색 정확도를 제어하며,
+규정 로드부터 인덱스 빌드까지 RAG 파이프라인 전 과정을 오케스트레이션합니다. 
 
 [모듈 구성]
-- rag_engine_sam_config   : 경로, 임베딩 모델/차원
-- rag_engine_sam_loader   : PDF 텍스트 추출
-- rag_engine_sam_chunker  : 텍스트 청킹
-- rag_engine_sam_embedder : OpenAI 임베딩
-- rag_engine_sam_store    : 인덱스 빌드(오케스트레이션)
-- rag_engine_sam_search   : 키워드 추출 등 검색 보조
+- config, loader, chunker, embedder, store, search 
 
 [사용] 스트림릿 등에서 search는 이 파일에서 임포트합니다.
   from rag_engine_sam import search, build_index
 """
+
 import os
 import json
 import faiss
