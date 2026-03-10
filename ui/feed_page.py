@@ -1,3 +1,7 @@
+""" ui/feed_page.py
+[법령 피드 페이지] 무한상사의 'raw_bot' 프로젝트에서 외부 최신 법령 개정 소식을 보여주는 화면입니다.
+경영지원본부 임직원들을 위해 최근 90일간의 법령 업데이트 데이터를 수집하여 요약 카드와 리스트 형태로 시각화하여 제공합니다. """
+
 import streamlit as st
 from logic.law_api import get_laws_sync
 from ui.law_card import render_law_card

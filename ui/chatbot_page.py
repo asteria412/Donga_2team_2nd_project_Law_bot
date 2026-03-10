@@ -1,3 +1,7 @@
+""" ui/chatbot_page.py
+[챗봇 인터페이스] 무한상사의 'raw_bot' 프로젝트에서 '무한raw봇'과의 대화 화면을 렌더링하는 파일입니다.
+사용자가 입력한 질문을 RAG 엔진에 전달하여 사내 규정 답변을 받아오고, 채팅 형식의 UI로 시각화하여 제공합니다. """
+
 import streamlit as st
 from logic.rag_engine import search as rag_search
 from logic.summarizer import generate_quiz_from_ai

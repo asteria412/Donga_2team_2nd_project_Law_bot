@@ -1,3 +1,7 @@
+""" ui/law_card.py
+[법령 카드 컴포넌트] 무한상사의 'raw_bot' 프로젝트에서 수집된 개별 법령 정보를 카드 형태로 시각화하는 파일입니다.
+각 법령의 부서 태그, 제목, 시행일 등을 UI에 렌더링하며, 상세 정보 링크 이동 및 '무한raw봇'의 AI 실무 퀴즈 모달 실행 기능을 제공합니다. """
+
 import streamlit as st
 from ui.quiz_modal import quiz_modal
 
