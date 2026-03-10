@@ -1,7 +1,0 @@
-fastapi
-uvicorn[standard]
-streamlit
-langchain
-python-dotenv
-requests
-apscheduler
