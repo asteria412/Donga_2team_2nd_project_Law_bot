@@ -9,6 +9,8 @@ import requests
 from dotenv import load_dotenv
 from openai import OpenAI
 
+from utils.token import update_token_usage
+
 # .env 파일에서 환경변수 로드
 load_dotenv()
 
@@ -111,7 +113,7 @@ def generate_quiz_from_ai(law_data, question_idx=0):
                 ],
                 temperature=0.8,
             )
-            
+            update_token_usage(response.usage)
             quiz_json_str = response.choices[0].message.content.strip()
             
             # 기계적인 JSON 파싱 보호 구문(.strip() 및 마크다운 제거)

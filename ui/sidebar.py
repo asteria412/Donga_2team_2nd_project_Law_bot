@@ -17,6 +17,17 @@ def render_sidebar():
         </div>
     """, unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
+    
+    # --- 토큰 사용량 섹션 ---
+    st.write("")
+    
+    # 세션 상태에서 값 가져오기 (값이 없으면 0으로 표시)
+    total_tokens = st.session_state.get("total_tokens", 0)
+    # gpt-4o-mini 가격 기준 (1M 토큰당 약 $0.15 입력 / $0.60 출력 평균치 가정)
+    estimated_cost = (total_tokens / 1_000_000) * 0.30 
+    
+    st.caption(f"📊 토큰 사용량: {total_tokens:,} tokens (${estimated_cost:.4f})")
+    # ---------------------------
 
     menu_options = ["📜 실시간 법령 피드", "💬 AI 사내규정 챗봇"]
     selected_page = st.radio("MAIN MENU", menu_options, label_visibility="collapsed")

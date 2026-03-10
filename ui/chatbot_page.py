@@ -6,6 +6,7 @@ import streamlit as st
 from logic.rag_engine import search as rag_search
 from logic.summarizer import generate_quiz_from_ai
 from openai import OpenAI
+from utils.token import update_token_usage
 
 def render_chatbot_page():
     st.markdown("### 💬 AI 사내규정 챗봇 '무한raw봇'")
@@ -35,7 +36,9 @@ def render_chatbot_page():
                         {"role": "user", "content": f"[규정]\n{context}\n\n[질문]\n{prompt}"}
                     ]
                 )
+                update_token_usage(res.usage)
                 ans = res.choices[0].message.content
 
             st.markdown(ans)
             st.session_state.messages.append({"role":"assistant","content":ans})
+            st.rerun()
