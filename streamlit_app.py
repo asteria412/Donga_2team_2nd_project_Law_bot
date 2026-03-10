@@ -4,9 +4,6 @@ from style.base_style import BASE_STYLE
 from ui.sidebar import render_sidebar
 from ui.feed_page import render_feed_page
 from ui.chatbot_page import render_chatbot_page
-from dotenv import load_dotenv
-
-load_dotenv()
 
 st.set_page_config(
     page_title="무한상사 raw-bot",
