@@ -61,11 +61,19 @@ def get_laws_sync(dept, count):
 
                         summary = get_law_change_summary(item.findtext('신구법일련번호',''), session)
 
+                        raw_agency = item.findtext('소관부처명', '')
+                        if raw_agency:
+                            clean_agency = ", ".join(list(dict.fromkeys([a.strip() for a in raw_agency.split(',') if a.strip()])))
+                        else:
+                            clean_agency = "미지정"
                         all_raw.append({
-                            "title": name, "p_dt": p_dt, "e_dt": e_dt,
-                            "agency": item.findtext('소관부처명',''),
+                            "title": name, 
+                            "p_dt": p_dt, 
+                            "e_dt": e_dt,
+                            "agency": clean_agency, # 중복 제거된 부서명
                             "mst_id": item.findtext('신구법일련번호',''),
-                            "dept": dept_tag, "summary": summary
+                            "dept": dept_tag, 
+                            "summary": summary
                         })
                 break
             except Exception:

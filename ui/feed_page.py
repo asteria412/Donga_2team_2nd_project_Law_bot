@@ -1,5 +1,5 @@
 """ ui/feed_page.py
-[법령 피드 페이지] 무한상사의 'raw_bot' 프로젝트에서 외부 최신 법령 개정 소식을 보여주는 화면입니다.
+[법령 피드 페이지] 무한개발공사의 'raw_bot' 프로젝트에서 외부 최신 법령 개정 소식을 보여주는 화면입니다.
 경영지원본부 임직원들을 위해 최근 90일간의 법령 업데이트 데이터를 수집하여 요약 카드와 리스트 형태로 시각화하여 제공합니다. """
 
 import streamlit as st
@@ -8,7 +8,7 @@ from ui.law_card import render_law_card
 from ui.summary_cards import render_summary_cards
 
 def render_feed_page(selected_dept, sort_opt, limit):
-    st.title("⚖️ 무한상사 Raw-bot")
+    st.title("⚖️ 무한개발공사 Raw-bot")
     st.markdown("### 좋은 하루되세요, 경영지원본부 임직원 여러분! 🌞")
     st.markdown("<p style='color:#868e96;margin-top:-10px;'>최근 90일간 업데이트된 핵심 법령을 확인하세요.</p>",unsafe_allow_html=True)
 

@@ -1,5 +1,5 @@
 """ ui/chatbot_page.py
-[챗봇 인터페이스] 무한상사의 'raw_bot' 프로젝트에서 '무한raw봇'과의 대화 화면을 렌더링하는 파일입니다.
+[챗봇 인터페이스] 무한개발공사의 'raw_bot' 프로젝트에서 '무한raw봇'과의 대화 화면을 렌더링하는 파일입니다.
 사용자가 입력한 질문을 RAG 엔진에 전달하여 사내 규정 답변을 받아오고, 채팅 형식의 UI로 시각화하여 제공합니다. """
 
 import streamlit as st
@@ -9,10 +9,10 @@ from openai import OpenAI
 
 def render_chatbot_page():
     st.markdown("### 💬 AI 사내규정 챗봇 '무한raw봇'")
-    st.markdown("<p style='color:#868e96;margin-top:-10px;'>무한상사 사내 규정에 대해 무엇이든 물어보세요.</p>", unsafe_allow_html=True)
+    st.markdown("<p style='color:#868e96;margin-top:-10px;'>무한개발공사 사내 규정에 대해 무엇이든 물어보세요.</p>", unsafe_allow_html=True)
 
     if "messages" not in st.session_state:
-        st.session_state.messages = [{"role":"assistant","content":"안녕하세요! 무한상사 규정 안내 전문가, AI 무한raw봇입니다."}]
+        st.session_state.messages = [{"role":"assistant","content":"안녕하세요! 무한개발공사 규정 안내 전문가, AI 무한raw봇입니다."}]
 
     for msg in st.session_state.messages:
         with st.chat_message(msg["role"]):

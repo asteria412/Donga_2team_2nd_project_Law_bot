@@ -1,5 +1,5 @@
 """ ui/sidebar.py
-[사이드바 내비게이션] 무한상사의 'raw_bot' 프로젝트 메인 메뉴와 필터링 옵션을 관리하는 파일입니다.
+[사이드바 내비게이션] 무한개발공사의 'raw_bot' 프로젝트 메인 메뉴와 필터링 옵션을 관리하는 파일입니다.
 '무한raw봇' 챗봇 및 실시간 법령 피드 메뉴 전환을 담당하며, 부서별 필터 및 정렬 기준 등 세부 설정값을 통합 제어하는 인터페이스를 제공합니다. """
 
 import streamlit as st
@@ -10,7 +10,7 @@ def render_sidebar():
         <div style="display: flex; align-items: center; gap: 8px;">
             <span style="font-size: 35px;">🏢</span>
             <span style="color: #4c6ef5; font-size: 30px; font-weight: 800; letter-spacing: -2px;">
-                무한상사
+                무한개발공사
             </span>
         </div>
         <p style="color:#868e96; font-size:18px; padding-left:45px; margin-top:5px; font-weight:500;">

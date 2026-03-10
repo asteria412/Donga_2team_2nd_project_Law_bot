@@ -32,7 +32,7 @@ HEADERS = {
 
 # 3. 페이지 설정
 st.set_page_config(
-    page_title="무한상사 raw-bot",
+    page_title="무한개발공사 raw-bot",
     page_icon="⚖️",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -191,13 +191,13 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# 5. 사이드바 (무한상사 전용 테마 및 기능 연결)
+# 5. 사이드바 (무한개발공사 전용 테마 및 기능 연결)
 with st.sidebar:
     st.markdown("""
     <div class="sidebar-logo" style="padding-left: 0px; margin-left: -6px;">
         <div style="display: flex; align-items: center; gap: 8px;">
             <span style="font-size: 35px;">🏢</span>
-            <span style="color: #4c6ef5; font-size: 30px; font-weight: 800; letter-spacing: -2px;">무한상사</span>
+            <span style="color: #4c6ef5; font-size: 30px; font-weight: 800; letter-spacing: -2px;">무한개발공사</span>
         </div>
         <p style="color: #868e96; font-size: 18px; margin-top: 5px; padding-left: 45px; font-weight: 500;">경영지원본부</p>
     </div>
@@ -322,7 +322,7 @@ def quiz_modal(law):
 
 # 8. 메인 컨텐츠 렌더링 (사이드바 선택에 따라 전환)
 if "실시간 법령 피드" in selected_page:
-    st.title("⚖️ 무한상사 Raw-bot")
+    st.title("⚖️ 무한개발공사 Raw-bot")
     st.markdown("### 좋은 하루되세요, 경영지원본부 임직원 여러분! 🌞")
     st.markdown("<p style='color:#868e96; margin-top:-10px;'>최근 90일간 업데이트된 핵심 법령을 확인하세요.</p>", unsafe_allow_html=True)
 
@@ -379,10 +379,10 @@ if "실시간 법령 피드" in selected_page:
 
 else: # AI 사내규정 챗봇 페이지
     st.markdown("### 💬 AI 사내규정 챗봇 '무한raw봇'")
-    st.markdown("<p style='color:#868e96; margin-top:-10px;'>무한상사 사내 규정에 대해 무엇이든 물어보세요.</p>", unsafe_allow_html=True)
+    st.markdown("<p style='color:#868e96; margin-top:-10px;'>무한개발공사 사내 규정에 대해 무엇이든 물어보세요.</p>", unsafe_allow_html=True)
     
     if "messages" not in st.session_state:
-        st.session_state.messages = [{"role": "assistant", "content": "안녕하세요! 무한상사 규정 안내 전문가, AI 무한raw봇입니다."}]
+        st.session_state.messages = [{"role": "assistant", "content": "안녕하세요! 무한개발공사 규정 안내 전문가, AI 무한raw봇입니다."}]
 
     for message in st.session_state.messages:
         with st.chat_message(message["role"]):
