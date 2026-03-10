@@ -25,7 +25,10 @@ def render_law_card(law):
             use_container_width=True)
     with col2:
         if st.button("🤖 AI 퀴즈", key=f"quiz{law['mst_id']}", use_container_width=True):
-            quiz_modal(law)
+            st.session_state[f"show_quiz_{law['mst_id']}"] = True
+    
+    if st.session_state.get(f"show_quiz_{law['mst_id']}", False):
+        quiz_modal(law)
 
 def _fmt(raw):
     return f"{raw[:4]}-{raw[4:6]}-{raw[6:]}" if len(raw)==8 else raw

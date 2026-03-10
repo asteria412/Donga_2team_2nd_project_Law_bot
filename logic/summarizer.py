@@ -9,7 +9,9 @@ load_dotenv()
 
 # OpenAI 클라이언트 초기화 (API 키는 환경변수 OPENAI_API_KEY에서 자동 로드됨)
 client = OpenAI()
+import streamlit as st
 
+@st.cache_data(show_spinner=False)
 def generate_quiz_from_ai(law_data):
     """
     주어진 법령 데이터(딕셔너리)를 바탕으로 OpenAI LLM을 사용하여 4지선다형 퀴즈를 생성합니다.
