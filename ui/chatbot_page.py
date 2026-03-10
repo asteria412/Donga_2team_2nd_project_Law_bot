@@ -8,11 +8,11 @@ from logic.summarizer import generate_quiz_from_ai
 from openai import OpenAI
 
 def render_chatbot_page():
-    st.markdown("### 💬 AI 법무 챗봇 '도비'")
+    st.markdown("### 💬 AI 법무 챗봇 '무한raw봇'")
     st.markdown("<p style='color:#868e96;margin-top:-10px;'>사내 규정 및 법률 관련 궁금한 점을 물어보세요.</p>", unsafe_allow_html=True)
 
     if "messages" not in st.session_state:
-        st.session_state.messages = [{"role":"assistant","content":"안녕하세요! 경영지원본부 AI 도비입니다. 무엇을 도와드릴까요?"}]
+        st.session_state.messages = [{"role":"assistant","content":"안녕하세요! 경영지원본부 AI 무한raw봇입니다. 무엇을 도와드릴까요?"}]
 
     for msg in st.session_state.messages:
         with st.chat_message(msg["role"]):
@@ -31,7 +31,7 @@ def render_chatbot_page():
                 res = client.chat.completions.create(
                     model="gpt-4o-mini",
                     messages=[
-                        {"role": "system", "content": "사내 규정 전문가 AI 도비입니다."},
+                        {"role": "system", "content": "사내 규정 전문가 AI 무한raw봇입니다."},
                         {"role": "user", "content": f"[규정]\n{context}\n\n[질문]\n{prompt}"}
                     ]
                 )
