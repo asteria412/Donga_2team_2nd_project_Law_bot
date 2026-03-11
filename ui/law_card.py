@@ -11,20 +11,22 @@ def render_law_card(law):
     summary_html = f'<div class="law-info" style="color:#228be6;font-weight:500;margin-top:5px;">{law["summary"]}</div>' if law.get("summary") else ""
 
     html = (
-        f'<div class="law-card"><div class="law-card-content">'
+        f'<div class="law-card">'
+        f'<div class="law-card-content">'
         f'<div class="law-badge-area">'
         f'<span class="law-dept-badge">👤 {law["dept"]}</span>'
         f'<span class="law-new-badge">NEW</span>'
         f'</div>'
-        f'<div class="law-title">{law["title"]}</div>'
+        f'<div class="law-title" style="font-weight:bold; font-size:1.1rem; margin:10px 0; height:3.2rem; overflow:hidden;">{law["title"]}</div>'
         f'<div class="law-info">📅 <b>공포:</b> {p}</div>'
         f'<div class="law-info">🚀 <b>시행:</b> {e}</div>'
         f'<div class="law-info">🏛️ <b>주관:</b> {law["agency"]}</div>'
         f'{summary_html}'
         '</div></div>'
     )
+    
     st.markdown(html, unsafe_allow_html=True)
-
+    st.write('<style>div.row-widget.stButton { margin-top: -10px; }</style>', unsafe_allow_html=True)
     col1, col2 = st.columns(2)
     with col1:
         st.link_button("👉 상세 정보(신구법)",

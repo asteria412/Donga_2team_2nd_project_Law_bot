@@ -16,7 +16,7 @@ def render_feed_page(selected_dept, sort_opt, limit):
     render_summary_cards(len(laws))
     st.markdown(f"#### 최근 업데이트 리스트({limit}개)")
 
-    cols = st.columns(2)
+    cols = st.columns(2, gap="small")
     for i, law in enumerate(laws[:limit]):
         with cols[i % 2]:
             render_law_card(law)

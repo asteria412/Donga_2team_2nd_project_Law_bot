@@ -8,15 +8,16 @@ def render_sidebar():
     # Logo Section
     logo_path = "assets/logo.png"
     
-    st.markdown('<div class="sidebar-logo-container">', unsafe_allow_html=True)
-    st.image(logo_path, use_container_width=True)
-    st.markdown("""
-        <div style="text-align: center;">
-            <span style="color: #1a73e8; font-size: 24px; font-weight: 800; letter-spacing: -1px;">무한개발공사</span>
-            <p style="color:#65676b; font-size:14px; margin-top:0px; font-weight:500;">경영지원본부 Legal Service</p>
+    st.markdown(f'''
+        <div class="sidebar-logo-container">
+            <img src="https://raw.githubusercontent.com/asteria412/Donga_2team_2nd_project_Law_bot/main/assets/logo.png" 
+                 class="sidebar-logo-img">
+            <div style="text-align: left; width: 100%; margin-left: -35px; padding: 0;">
+                <span style="color: #1a73e8; font-size: 24px; font-weight: 800; letter-spacing: -1px;">무한개발공사</span>
+                <p style="color:#65676b; font-size:14px; margin-top:0px; font-weight:500;">경영지원본부 Legal Service</p>
+            </div>
         </div>
-    """, unsafe_allow_html=True)
-    st.markdown('</div>', unsafe_allow_html=True)
+    ''', unsafe_allow_html=True)
     
     # --- 토큰 사용량 섹션 ---
     st.write("")

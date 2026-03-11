@@ -32,21 +32,28 @@ BASE_STYLE = """
     }
 
     .sidebar-logo-container {
-        padding: 20px;
-        text-align: center;
+        /* 32px는 아래 라디오 버튼 아이콘 위치와 맞춘 값입니다 */
+        padding: 20px 20px 20px 32px !important; 
+        text-align: left !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: flex-start !important; /* 왼쪽으로 모으기 */
         border-bottom: 1px solid var(--border-color);
         margin-bottom: 20px;
     }
 
     .sidebar-logo-img {
-        width: 120px;
+        width: 180px !important;
         border-radius: 12px;
         margin-bottom: 10px;
+        margin-left: -75px !important;
         transition: transform 0.3s ease;
     }
     .sidebar-logo-img:hover {
         transform: scale(1.05);
     }
+
+    /* Card Styling with Glassmorphism */
 
     /* Card Styling with Glassmorphism */
     .law-card {
@@ -56,21 +63,28 @@ BASE_STYLE = """
         border-radius: 24px;
         border: 1px solid var(--border-color);
         box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
-        margin-bottom: 24px;
+        margin-bottom: 14px;
         overflow: hidden;
         transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        
+        /* [핵심 1] 높이 고정 및 내부 정렬 선언 */
+        height: 340px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .law-card-content {
+        /* [핵심 2] 분홍색 여백을 6px로 확 줄이고, 남는 공간을 다 채우도록 함 */
+        padding: 6px 24px; 
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1; /* 이 줄이 있어야 버튼이 바닥에 딱 붙습니다! */
     }
 
     .law-card:hover {
         transform: translateY(-8px);
         box-shadow: 0 12px 48px rgba(0, 0, 0, 0.1);
         border-color: rgba(26, 115, 232, 0.2);
-    }
-
-    .law-card-content {
-        padding: 32px;
-        display: flex;
-        flex-direction: column;
     }
 
     .law-badge-area {
@@ -103,18 +117,23 @@ BASE_STYLE = """
     }
 
     .law-title {
-        font-size: 22px;
+        font-size: 20px;
         font-weight: 700;
+        margin-bottom: 12px;
         color: #1c1e21;
         margin-bottom: 16px;
         line-height: 1.4;
+        height: 2.8em; 
         letter-spacing: -0.5px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
     }
 
     .law-info {
         font-size: 14px;
         color: var(--text-muted);
-        margin-bottom: 8px;
+        margin-bottom: 6px;
         display: flex;
         align-items: flex-start;
         gap: 8px;
@@ -192,6 +211,13 @@ BASE_STYLE = """
     .stButton > button:hover {
         transform: scale(1.02);
         box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    [data-testid="stLinkButton"] a {
+        height: 46px !important;
+        border-radius: 12px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
     }
 </style>
 """
