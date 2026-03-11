@@ -26,7 +26,10 @@ def render_chatbot_page():
         with st.chat_message("assistant"):
             with st.spinner("규정을 분석 중입니다..."):
                 results = rag_search(prompt, top_k=3)
-                context = "\n".join(r['text'] for r in results) if results else "관련 규정을 찾을 수 없습니다."
+                #각 청크 앞에 문서명을 태그처럼 붙여줌
+                context = ""
+                for r in results:
+                    context += f"[{r['source']}] {r['text']}\n---\n" if results else "관련 규정을 찾을 수 없습니다."
 
                 client = OpenAI()
                 res = client.chat.completions.create(
@@ -35,8 +38,10 @@ def render_chatbot_page():
                         {"role": "system", "content": (
                                 "당신은 무한개발공사의 사내 규정 전문가입니다. "
                                 "제공된 [규정] 내용에 기반하여 본론의 핵심만 답변하세요. "
-                                "제공된 규정에서 가장 연관성 높은 내용을 찾아 안내하고 근거규정은 답변 본문내용에서 제외하고 답변하단에 명시하세요(예:📍근거 규정:취업규정 제26조,부패신고 처리 및 신고자 보호 등에 관한 운영 내규 제17조). "
-                                "제공된 규정에서 근거규정이 없거나 완전히 무관한 내용일 때만 '해당 내용은 현재 규정에서 찾을 수 없습니다.'라고 답변하세요.")},
+                                "반드시 답변 하단에 해당 내용의 출처인 명칭과 조항을 명시하세요."
+                                "(예:📍근거 규정:취업규정 제26조,부패신고 처리 및 신고자 보호 등에 관한 운영 내규 제17조)"
+                                "제공된 규정에서 가장 연관성 높은 내용을 찾아 안내하고 근거규정이 없거나 완전히 무관한 내용일 때만"
+                                "'해당 내용은 현재 규정에서 찾을 수 없습니다.'라고 답변하세요.")},
                         {"role": "user", "content": f"[규정]\n{context}\n\n[질문]\n{prompt}"}
                     ]
                 )
