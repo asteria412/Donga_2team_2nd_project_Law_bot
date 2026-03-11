@@ -18,11 +18,27 @@ load_dotenv()
 client = OpenAI()
 import streamlit as st
 
+# 캐시 파일 경로
+QUIZ_CACHE_FILE = 'data/quiz_cache.json'
+
+def load_quiz_cache():
+    if os.path.exists(QUIZ_CACHE_FILE):
+        try:
+            with open(QUIZ_CACHE_FILE, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except:
+            return {}
+    return {}
+
+def save_quiz_cache(cache):
+    os.makedirs(os.path.dirname(QUIZ_CACHE_FILE), exist_ok=True)
+    with open(QUIZ_CACHE_FILE, 'w', encoding='utf-8') as f:
+        json.dump(cache, f, ensure_ascii=False, indent=2)
+
 @st.cache_data(show_spinner=False)
-def generate_quiz_from_ai(law_data, question_idx=0):
+def generate_quiz_from_ai(law_data, question_idx=0, count=3):
     """
-    주어진 법령 데이터(딕셔너리)를 바탕으로 OpenAI LLM을 사용하여 4지선다형 퀴즈를 생성합니다.
-    question_idx를 다르게 주어 여러 개의 서로 다른 퀴즈를 생성할 수 있습니다.
+    주어진 법령 데이터(딕셔너리)를 바탕으로 OpenAI LLM을 사용하여 여러 개의 4지선다형 퀴즈를 일괄 생성합니다.
     """
     if not law_data:
         return None
@@ -59,7 +75,6 @@ def generate_quiz_from_ai(law_data, question_idx=0):
                 new_articles = root.findall('.//조문')
 
             if new_articles:
-                # 개정된 조문이 여러 개일 수 있으므로 텍스트를 추출해 합칩니다.
                 extracted_texts = []
                 for idx, article in enumerate(new_articles):
                     text = "".join(article.itertext()).strip()
@@ -67,37 +82,44 @@ def generate_quiz_from_ai(law_data, question_idx=0):
                         extracted_texts.append(text)
                 
                 if extracted_texts:
-                    # 너무 길면 LLM 토큰비가 폭발하고 AI가 헷갈려하므로 1000자로 타이트하게 컷!
-                    article_content = "\n".join(extracted_texts)[:1000]
+                    article_content = "\n".join(extracted_texts)[:1500] # 조금 더 길게 정보 제공
         except Exception as e:
             print(f"조문 본문 100% 딥서치 중 오류 발생 (무시하고 상식 퀴즈로 진행): {e}")
+
+    # [CACHING] 이미 생성된 퀴즈가 있는지 확인
+    cache = load_quiz_cache()
+    cache_key = f"{mst_id}_{law_name}"
+    if cache_key in cache and len(cache[cache_key]) > question_idx:
+        return cache[cache_key] # 리스트 전체 반환
 
     # 실제 조문 내용을 바탕으로 실무 퀴즈를 짜도록 프롬프트 강화!
     prompt = f"""
     당신은 기업의 실무진(인사, 재무, 총무)을 교육하는 직무 교육 퀴즈 출제 위원입니다.
-    이번 출제 대상 법령 정보는 다음과 같습니다 (질문 순번: {question_idx + 1}).
+    이번 출제 대상 법령 정보는 다음과 같습니다.
     
     - 대상 법령: {law_name}
-    - 참고 조문제목: {article_title}
     - 상세 조문내용: {article_content}
     
-    위 '상세 조문내용'을 꼼꼼히 읽고, 조문에 명시된 구체적인 숫자, 기준, 비율, 기간, 자격 조건 등을 활용하여 실무 퀴즈 1문제를 4지 선다형으로 출제하세요.
-    질문 순번({question_idx + 1})이 높을수록 조문의 다른 부분을 활용하여 중복되지 않는 문제를 만드세요.
+    위 '상세 조문내용'을 바탕으로, 실무에서 마주칠 법한 시나리오 기반의 4지 선다형 퀴즈를 총 {count}문제 생성하세요.
+    각 문제는 서로 다른 조문이나 포인트를 다루어야 합니다.
 
-    [출제 철칙 - 반드시 지킬 것]
+    [출제 철칙]
     1. ❌ 단순 암기 질문 금지: '공포일', '시행일', '소관부처' 질문은 절대 금지!
-    2. ❌ 조문 번호 보기 금지: 보기(Options)에 "제413조", "제12조의2" 같은 **조문 번호만 달랑 넣는 것은 절대 금지**입니다. 보기는 반드시 구체적인 설명이나 숫자가 포함된 문장이어야 합니다.
-    3. ✅ 조문 기반 구체적 보기 필수: 보기에는 반드시 조문에 나오는 실제 숫자·기준·비율·기간·금액을 포함하세요. 
-    4. ✅ 가상 시나리오 활용: 질문은 가상의 실무 상황("무한개발공사 인사팀의 김대리가 ~하려고 한다")으로 시작하여 실체적인 해결책을 묻도록 하세요.
-    5. ✅ 해설에는 근거 조문을 인용하고 실무 Action Item을 포함하세요.
+    2. ❌ 조문 번호 보기 금지: 보기(Options)에 "제206조" 처럼 **조문 번호만 넣는 것은 절대 금지**입니다. 보기는 반드시 구체적인 설명이나 수치가 포함된 문장이어야 합니다.
+    3. ✅ 가상 시나리오 활용: 질문은 가상의 실무 상황("무한개발공사 인사팀의 김대리가 ~하려고 한다")으로 구성하세요.
+    4. ✅ 해설에는 근거 조문과 실무 Action Item을 포함하세요.
+    5. ⚠️ 정답 필드: 'answer' 필드에는 반드시 위 'options' 리스트에 있는 문자열과 **토씨 하나 틀리지 않고 똑같은 문자열**을 넣으세요.
     
-    반드시 아래 견본과 똑같은 형식의 순수 JSON으로만 응답하세요.
-    {{
-        "question": "무한개발공사 인사팀의 김대리가 퇴직한 직원의 미지급 임금 처리 기준을 확인하려 합니다. '{law_name}'에 따른 지연이자 이율 상한은?",
-        "options": ["연 100분의 20 이내", "연 100분의 40 이내", "연 100분의 50 이내", "연 100분의 60 이내"],
-        "answer": "연 100분의 40 이내",
-        "explanation": "제37조에 따르면 미지급 임금에 대한 지연이자는 '연 100분의 40 이내'로 규정되어 있습니다. (Action Item: 급여팀에 지연이자율 적용 기준표를 배포하세요.)"
-    }}
+    반드시 아래 견본 리스트 형식의 순수 JSON으로만 응답하세요. (마크다운 없이)
+    [
+        {{
+            "question": "가상의 실무 질문 1...",
+            "options": ["정확한 답변 문장1", "정확한 답변 문장2", "정확한 답변 문장3", "정확한 답변 문장4"],
+            "answer": "정확한 답변 문장1",
+            "explanation": "해설 1..."
+        }},
+        ... (총 {count}개)
+    ]
     """
     
     for attempt in range(3):
@@ -122,31 +144,38 @@ def generate_quiz_from_ai(law_data, question_idx=0):
             if quiz_json_str.endswith('```'):
                 quiz_json_str = quiz_json_str[:-3]
                 
-            quiz_data = json.loads(quiz_json_str.strip())
+            quiz_list = json.loads(quiz_json_str.strip())
             
-            # [최종 방어 로직] LLM이 날짜/부처를 물어봤는지 체크
-            # 💡 주의: '시행', '공포'는 법령명("시행령", "시행규칙")에 포함될 수 있으므로 제거!
+            if not isinstance(quiz_list, list):
+                quiz_list = [quiz_list]
+
+            # 가드레일: 날짜/부처 질문 제거
+            valid_quiz_list = []
             bad_keywords = ["소관부처는", "어디인가", "공포일은", "시행일은", "날짜는", "언제인가"]
-            combined_text = quiz_data.get("question", "") + " ".join(quiz_data.get("options", []))
-            # 법령명을 검사 텍스트에서 제거 (법령명에 '시행'이 들어가면 오탐 방지)
-            check_text = combined_text.replace(law_name, "")
             
-            is_bad = any(word in check_text for word in bad_keywords)
-            
-            if is_bad:
-                print(f"[GUARD {attempt+1}] AI asked meta-data. Retrying...")
-                continue
+            for q_data in quiz_list:
+                combined_text = q_data.get("question", "") + " ".join(q_data.get("options", []))
+                check_text = combined_text.replace(law_name, "")
+                if not any(word in check_text for word in bad_keywords):
+                    valid_quiz_list.append(q_data)
+
+            if len(valid_quiz_list) > 0:
+                # 캐시에 저장
+                cache[cache_key] = valid_quiz_list
+                save_quiz_cache(cache)
+                return valid_quiz_list
                 
-            return quiz_data # 룰 통과 시 즉시 반환
+            continue
             
         except Exception as e:
             print(f"퀴즈 생성 중 오류 발생 (시도 {attempt+1}/3): {e}")
             continue
 
-    # 3번이나 AI가 말을 안들었거나 에러가 났을 때 나오는 '최후의 비상용 상식 퀴즈'
-    return {
+    # 최종 비상용 퀴즈 (리스트 형태)
+    emergency_quiz = [{
         "question": f"무한개발공사 경영지원본부가 '{law_name}' 업데이트와 관련하여 가장 먼저 취해야 할 올바른 실무 조치는 무엇일까요?",
         "options": ["사내 취업규칙 및 기안 규정 점검", "아무 조치 없이 관행대로 업무 진행", "사장님에게 구두로만 임의 보고", "전 직원 즉각 조기 퇴근"],
         "answer": "사내 취업규칙 및 기안 규정 점검",
         "explanation": "법령이 개정될 때는 우리 회사의 취업규칙과 내부 정책이 위반되지 않는지 선제적으로 점검하는 것이 실무의 기본입니다!"
-    }
+    }]
+    return emergency_quiz
