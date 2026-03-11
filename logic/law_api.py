@@ -23,6 +23,7 @@ def get_law_change_summary(mst_id, session):
     except:
         return ""
 
+@st.cache_data(ttl=3600, show_spinner="법령 데이터를 불러오는 중입니다...")
 def get_laws_sync(dept, count):
     DEPT_KEYWORDS = {
         "인사팀": ["근로기준법","남녀고용평등","산업안전보건법","최저임금법","근로자퇴직급여","파견근로자"],
