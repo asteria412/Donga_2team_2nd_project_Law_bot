@@ -1,0 +1,20 @@
+# 1. LangSmith 설정 (에이전트 로그 및 추적용)
+# 랭체인의 실행 과정을 랭스미스로 보낼지 여부
+LANGCHAIN_TRACING_V2=true
+
+# 랭스미스 콘솔에 표시될 프로젝트 이름
+LANGCHAIN_PROJECT="Law Bot System"
+
+# 랭스미스 API 엔드포인트 (기본값)
+LANGCHAIN_ENDPOINT="https://api.smith.langchain.com"
+
+# 랭스미스 API 키 (https://smith.langchain.com 에서 발급받은 키 입력)
+LANGCHAIN_API_KEY="ls_xxxxx" # 본인 키로 바꿔야 함
+
+# 상세 로그 출력 여부 (모델이 내부적으로 '떠들게' 만드는 설정)
+# True로 설정하면 터미널 콘솔에 실행 과정이 상세히 출력됩니다.
+LANGCHAIN_VERBOSE=true
+
+LAW_API_KEY="xxxxx" # 법령 API OC (https://www.law.go.kr/에서 발급받은 OC 입력)
+
+OPENAI_API_KEY=xxxxx # 본인 키로 바꿔야 함
