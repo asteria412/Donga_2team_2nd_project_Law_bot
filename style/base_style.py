@@ -68,7 +68,7 @@ BASE_STYLE = """
         transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
         
         /* [핵심 1] 높이 고정 및 내부 정렬 선언 */
-        height: 340px;
+        height: 300px;
         display: flex;
         flex-direction: column;
     }

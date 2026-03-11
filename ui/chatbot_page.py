@@ -9,7 +9,7 @@ from openai import OpenAI
 from utils.token import update_token_usage
 
 def render_chatbot_page():
-    st.markdown("### 💬 AI 사내규정 챗봇 '무한Law봇'")
+    st.markdown("# AI 사내규정 챗봇 무한Law봇💬 ")
     st.markdown("<p style='color:#868e96;margin-top:-10px;'>무한개발공사 사내 규정에 대해 무엇이든 물어보세요.</p>", unsafe_allow_html=True)
 
     if "messages" not in st.session_state:
